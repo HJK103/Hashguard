@@ -21,7 +21,11 @@ A lightweight, local web-based file integrity and malware scanner designed speci
 [THE FULL TUTORIAL FOR NEWBIE]
 
 pkg update && pkg install python git -y
+
 git clone https://github.com/HJK103/Hashguard.git
+
 cd Hashguard
+
 pip install flask requests
+
 python app.py
