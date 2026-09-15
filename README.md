@@ -17,3 +17,11 @@ A lightweight, local web-based file integrity and malware scanner designed speci
 3. Run the application server: python app.py
 
 4. Open your mobile browser and access the local dashboard:
+
+[THE FULL TUTORIAL FOR NEWBIE]
+
+pkg update && pkg install python git -y
+git clone https://github.com/HJK103/Hashguard.git
+cd Hashguard
+pip install flask requests
+python app.py
