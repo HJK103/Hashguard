@@ -14,7 +14,7 @@ A lightweight, local web-based file integrity and malware scanner designed speci
 
 2. Install the required dependencies: pip install flask requests
 
-3. Run the application server: python app.py
+3. Run the application server: python main.py
 
 4. Open your mobile browser and access the local dashboard:
 
@@ -28,4 +28,4 @@ cd Hashguard
 
 pip install flask requests
 
-python app.py
+python main.py
