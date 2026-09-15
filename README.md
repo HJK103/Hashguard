@@ -29,3 +29,11 @@ cd Hashguard
 pip install flask requests
 
 python main.py
+
+if not work, use this
+
+pkill -f python
+
+cd /storage/emulated/0/githubtools/virusdetector [u need clone all file and folder]
+
+python main.py
