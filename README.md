@@ -1,39 +1,35 @@
-# HashGuard
+# HashGuard v2
 
-A lightweight, local web-based file integrity and malware scanner designed specifically for Termux, featuring a high-contrast Dark Neo-Brutalist interface.
+**HashGuard** adalah utilitas keamanan web lokal yang berjalan di **Termux** untuk memindai integritas berkas (MD5/SHA-256) dan mendeteksi malware secara instan, aman, dan real-time langsung dari HP...
 
-## Features
-* **Hash Calculation:** Instantly computes cryptographic `MD5` and `SHA-256` hashes for any uploaded file to verify data integrity.
-* **Threat Detection:** Scans files against digital threat signatures to identify potential malware or trojans.
-* **Auto-Cleanup:** Automatically deletes uploaded files from the local server directory immediately after the scan completes to protect your storage and privacy.
-* **Local Web Dashboard:** Runs entirely on `localhost` via Python Flask, accessible directly through your mobile browser with a bold, high-contrast UI.
+Credit : HJK - Gijutsu
 
-## Installation & Usage
+## Fitur Utama [UPDATE]
 
-1. how to install/use?
+- **Status Bar Real-Time**: Memantau status koneksi internet, indikator baterai perangkat, dan jam digital secara langsung di dalam web dashboard.
+- **Kalkulasi Checksum**: Menghitung hash kriptografi **MD5** dan **SHA-256** secara instan untuk verifikasi integritas file.
+- **Animasi Proses & Terminal Log**: Dilengkapi progress bar dinamis dan log terminal bergaya hacker saat pemindaian berkas berlangsung.
+- **Deteksi Spesifik Ancaman**: Mampu mengenali dan melaporkan jenis malware atau virus spesifik jika berkas terindikasi berbahaya.
+- **Auto-Cleanup (Privasi Terjaga)**: Secara otomatis menghapus berkas yang diunggah dari direktori server begitu proses pemindaian selesai.
 
-2. Install the required dependencies: pip install flask requests
+---
 
-3. Run the application server: python main.py
+## Cara Instalasi di Termux
 
-4. Open your mobile browser and access the local dashboard:
+Jalankan perintah dibawah ini
 
-[THE FULL TUTORIAL FOR NEWBIE]
-
-pkg update && pkg install python git -y
-
-git clone https://github.com/HJK103/Hashguard.git
-
+```bash
+# Clone repository
+git clone [https://github.com/HJK103/Hashguard.git](https://github.com/HJK103/Hashguard.git)
 cd Hashguard
 
+# Masuk ke folder proyek dan pastikan struktur direktori (templates/index.html) sudah sesuai
+
+# Install dependensi Flask & Requests
 pip install flask requests
 
+# Jalankan server utama
 python main.py
 
-if not work, use this
-
-pkill -f python
-
-cd /storage/emulated/0/githubtools/virusdetector [u need clone all file and folder]
-
-python main.py
+Jika tidak work, saya sarankan untuk mendownload seluruh file/folder terlebih dahulu
+lalu ketik cd /storage/emulated/0/githubtools/virusdetector
