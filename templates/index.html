@@ -184,11 +184,8 @@
         .danger { background-color: #fee2e2; }
         .result-title {
             font-weight: 700;
-            font-size: 16px;
+            font-size: 15px;
             margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
         .hash-box {
             background: #fff;
@@ -229,7 +226,7 @@
         </div>
         <div class="status-item" id="battery-status">
             <svg viewBox="0 0 24 24"><path d="M16 4h-3V2h-2v2H8C6.9 4 6 4.9 6 6v14c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H8V6h8v14z"/></svg>
-            <span id="batt-text">--%</span>
+            <span id="batt-text">Ready</span>
         </div>
         <div class="status-item" id="live-clock">
             <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
@@ -325,7 +322,11 @@
             navigator.getBattery().then(batt => {
                 const lvl = Math.round(batt.level * 100);
                 document.getElementById('batt-text').innerText = `${lvl}%`;
+            }).catch(() => {
+                document.getElementById('batt-text').innerText = "Protected";
             });
+        } else {
+            document.getElementById('batt-text').innerText = "Active";
         }
     }
     setInterval(updateStatus, 1000);
@@ -359,11 +360,8 @@
         setTimeout(() => { barFill.style.width = '75%'; logText.innerText = "> Membandingkan signature dengan database ancaman..."; }, 700);
 
         try {
-            const response = await fetch('/scan', {
-                method: 'POST',
-                body: formData
-            });
-            const data = await response.json();
+            const response = await hrefFetch();
+            const responseData = await response.json();
 
             setTimeout(() => {
                 barFill.style.width = '100%';
@@ -371,11 +369,11 @@
                 
                 setTimeout(() => {
                     progressContainer.style.display = 'none';
-                    showResults(data);
+                    showResults(responseData);
                     
                     totalScanned++;
                     document.getElementById('stat-scanned').innerText = totalScanned;
-                    if (data.infected) {
+                    if (responseData.infected) {
                         totalThreats++;
                         document.getElementById('stat-threats').innerText = totalThreats;
                     }
@@ -387,6 +385,16 @@
             logText.innerText = "> Error: Koneksi backend terputus.";
         }
     };
+
+    async function hrefFetch() {
+        const fileInput = document.getElementById('file-input');
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+        return await fetch('/scan', {
+            method: 'POST',
+            body: formData
+        });
+    }
 
     function showResults(data) {
         const resultBox = document.getElementById('result-box');
@@ -401,11 +409,11 @@
         resultBox.style.display = 'block';
         if (data.infected) {
             resultBox.className = "card danger";
-            resHeader.innerHTML = `<svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> PERINGATAN: ANCAMAN MALWARE TERDETEKSI!`;
+            resHeader.innerText = "PERINGATAN: ANCAMAN MALWARE TERDETEKSI!";
             resHeader.style.color = "#dc2626";
         } else {
             resultBox.className = "card safe";
-            resHeader.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> STATUS: BERKAS BERSIH & AMAN`;
+            resHeader.innerText = "STATUS: BERKAS BERSIH & AMAN";
             resHeader.style.color = "#059669";
         }
     }
