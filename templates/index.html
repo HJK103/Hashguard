@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HashGuard - Advanced Local Security Scanner</title>
-    <!-- Google Fonts -->
+    <title>HashGuard v2 - Advanced Security Scanner</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -16,30 +15,29 @@
         body {
             background-color: #f3f0ea;
             color: #121212;
-            padding: 15px;
+            padding: 12px;
             min-height: 100vh;
         }
         .container {
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
         }
-        /* Top Status Bar (Neo-Brutalist Style) */
         .status-bar {
             background: #ffffff;
             border: 3px solid #121212;
             box-shadow: 4px 4px 0px #121212;
-            padding: 10px 15px;
+            padding: 10px 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .status-item {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
         }
         .dot {
             width: 8px;
@@ -54,37 +52,71 @@
             50% { opacity: 0.4; }
             100% { opacity: 1; }
         }
-
-        /* Main Card */
         .card {
             background: #ffffff;
             border: 4px solid #121212;
             box-shadow: 6px 6px 0px #121212;
-            padding: 24px;
-            margin-bottom: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
         }
         h1 {
-            font-size: 26px;
+            font-size: 22px;
             font-weight: 700;
-            margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: -0.5px;
         }
-        p.subtitle {
-            font-size: 14px;
-            color: #555;
-            margin-bottom: 20px;
+        .badge {
+            background: #ffe600;
+            border: 2px solid #121212;
+            padding: 3px 8px;
+            font-size: 10px;
+            font-weight: 700;
+            box-shadow: 2px 2px 0px #121212;
+            text-transform: uppercase;
         }
-
-        /* Upload Zone */
+        p.subtitle {
+            font-size: 13px;
+            color: #444;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .stat-box {
+            background: #faf8f5;
+            border: 2px solid #121212;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 3px 3px 0px #121212;
+        }
+        .stat-box .val {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .stat-box .lbl {
+            font-size: 10px;
+            color: #666;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
         .upload-zone {
             border: 3px dashed #121212;
-            padding: 30px 20px;
+            padding: 25px 15px;
             text-align: center;
             background: #faf8f5;
             cursor: pointer;
             transition: background 0.2s;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         .upload-zone:hover {
             background: #eee8df;
@@ -102,7 +134,11 @@
             width: 100%;
             cursor: pointer;
             text-transform: uppercase;
-            font-size: 15px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             transition: transform 0.1s, box-shadow 0.1s;
         }
         .btn:active {
@@ -112,25 +148,23 @@
         .btn-primary {
             background: #ffe600;
         }
-
-        /* Realtime Progress & Console Simulation */
         #progress-container {
             display: none;
-            margin-top: 20px;
+            margin-top: 15px;
             border: 3px solid #121212;
             background: #121212;
             color: #22c55e;
-            padding: 15px;
+            padding: 12px;
             font-family: monospace;
-            font-size: 12px;
+            font-size: 11px;
             box-shadow: 4px 4px 0px #ff6b6b;
         }
         .progress-bar-track {
             width: 100%;
-            height: 12px;
+            height: 10px;
             background: #333;
             border: 2px solid #fff;
-            margin-top: 10px;
+            margin-top: 8px;
             overflow: hidden;
         }
         .progress-bar-fill {
@@ -139,21 +173,18 @@
             background: #22c55e;
             transition: width 0.3s ease;
         }
-
-        /* Result Box */
         #result-box {
             display: none;
-            margin-top: 20px;
+            margin-top: 15px;
             border: 3px solid #121212;
-            padding: 18px;
+            padding: 16px;
             box-shadow: 5px 5px 0px #121212;
         }
         .safe { background-color: #d1fae5; }
         .danger { background-color: #fee2e2; }
-        
         .result-title {
             font-weight: 700;
-            font-size: 18px;
+            font-size: 16px;
             margin-bottom: 10px;
             display: flex;
             align-items: center;
@@ -162,86 +193,138 @@
         .hash-box {
             background: #fff;
             border: 2px solid #121212;
-            padding: 8px;
+            padding: 6px 8px;
             font-size: 11px;
             word-break: break-all;
-            margin-top: 8px;
+            margin-top: 4px;
             font-family: monospace;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 6px;
+            border-bottom: 1px dashed #bbb;
+            padding-bottom: 4px;
+        }
+        svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+        svg.lg {
+            width: 20px;
+            height: 20px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- Status Bar Real-time (Baterai, Jam, Koneksi) -->
     <div class="status-bar">
         <div class="status-item">
             <span class="dot"></span>
-            <span id="connection-status">Online</span>
+            <span id="connection-status">Online (Local)</span>
         </div>
-        <div class="status-item" id="battery-status">⚡ --%</div>
-        <div class="status-item" id="live-clock">00:00:00</div>
+        <div class="status-item" id="battery-status">
+            <svg viewBox="0 0 24 24"><path d="M16 4h-3V2h-2v2H8C6.9 4 6 4.9 6 6v14c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H8V6h8v14z"/></svg>
+            <span id="batt-text">--%</span>
+        </div>
+        <div class="status-item" id="live-clock">
+            <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+            <span id="clock-text">00:00:00</span>
+        </div>
     </div>
 
-    <!-- Main Controller Card -->
     <div class="card">
-        <h1>HashGuard v2</h1>
-        <p class="subtitle">Local File Integrity & Malware Deep Scanner</p>
+        <div class="header-flex">
+            <div>
+                <h1>HashGuard Engine</h1>
+                <p class="subtitle">Termux Local Malware & Checksum Deep Inspector</p>
+            </div>
+            <div class="badge">v2.1 Pro</div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="val" id="stat-scanned">0</div>
+                <div class="lbl">Files Scanned</div>
+            </div>
+            <div class="stat-box">
+                <div class="val" id="stat-threats" style="color: #dc2626;">0</div>
+                <div class="lbl">Threats Found</div>
+            </div>
+            <div class="stat-box">
+                <div class="val" style="color: #059669;">Active</div>
+                <div class="lbl">Engine Status</div>
+            </div>
+        </div>
 
         <form id="upload-form" enctype="multipart/form-data">
             <div class="upload-zone" onclick="document.getElementById('file-input').click()">
-                <p id="file-label">📁 Tap untuk pilih file atau arsip...</p>
+                <svg class="lg" viewBox="0 0 24 24" style="margin-bottom: 6px;"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3zM8 13h2.55v3h2.9v-3H16l-4-4-4 4z"/></svg>
+                <p id="file-label" style="font-weight: 600; font-size: 13px;">Tap atau pilih berkas arsip / script...</p>
             </div>
             <input type="file" id="file-input" name="file" required onchange="updateFileName(this)">
-            <button type="submit" class="btn btn-primary">Mulai Scan Real-Time</button>
+            <button type="submit" class="btn btn-primary">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                Mulai Pemindaian Real-Time
+            </button>
         </form>
 
-        <!-- Progress & Realtime Terminal Logs -->
         <div id="progress-container">
-            <div id="log-text">> Inisialisasi mesin pemindai...</div>
+            <div id="log-text">> Menyiapkan sandbox lokal...</div>
             <div class="progress-bar-track">
                 <div class="progress-bar-fill" id="bar-fill"></div>
             </div>
         </div>
 
-        <!-- Result Card -->
         <div id="result-box">
             <div class="result-title" id="res-header">Hasil Analisis</div>
-            <p><strong>Nama File:</strong> <span id="res-name">-</span></p>
-            <p><strong>Ukuran:</strong> <span id="res-size">-</span></p>
-            <p style="margin-top: 8px;"><strong>Status Ancaman:</strong> <span id="res-threat" style="font-weight:700;">-</span></p>
+            <div class="detail-row">
+                <span>Nama Berkas:</span>
+                <strong id="res-name">-</strong>
+            </div>
+            <div class="detail-row">
+                <span>Ukuran Berkas:</span>
+                <strong id="res-size">-</strong>
+            </div>
+            <div class="detail-row">
+                <span>Status Ancaman:</span>
+                <strong id="res-threat">-</strong>
+            </div>
             
-            <div style="margin-top: 10px; font-size: 12px; font-weight: 700;">MD5 Checksum:</div>
+            <div style="margin-top: 10px; font-size: 11px; font-weight: 700;">MD5 CHECKSUM:</div>
             <div class="hash-box" id="res-md5">-</div>
             
-            <div style="margin-top: 8px; font-size: 12px; font-weight: 700;">SHA-256 Checksum:</div>
+            <div style="margin-top: 6px; font-size: 11px; font-weight: 700;">SHA-256 CHECKSUM:</div>
             <div class="hash-box" id="res-sha256">-</div>
         </div>
     </div>
 </div>
 
 <script>
-    // Live Clock & Status Bar
+    let totalScanned = 0;
+    let totalThreats = 0;
+
     function updateStatus() {
         const now = new Date();
-        document.getElementById('live-clock').innerText = now.toTimeString().split(' ')[0];
+        document.getElementById('clock-text').innerText = now.toTimeString().split(' ')[0];
         
-        // Cek Koneksi Internet
         const conn = document.getElementById('connection-status');
         if (navigator.onLine) {
-            conn.innerText = "Online";
+            conn.innerText = "Online (Local)";
             conn.previousElementSibling.style.backgroundColor = "#22c55e";
         } else {
-            conn.innerText = "Offline (Local Engine)";
+            conn.innerText = "Offline Engine";
             conn.previousElementSibling.style.backgroundColor = "#ef4444";
         }
 
-        // Cek Baterai (jika didukung browser HP)
         if (navigator.getBattery) {
             navigator.getBattery().then(batt => {
                 const lvl = Math.round(batt.level * 100);
-                const charging = batt.charging ? '⚡' : '';
-                document.getElementById('battery-status').innerText = `${charging} ${lvl}%`;
+                document.getElementById('batt-text').innerText = `${lvl}%`;
             });
         }
     }
@@ -250,11 +333,10 @@
 
     function updateFileName(input) {
         if (input.files.length > 0) {
-            document.getElementById('file-label').innerText = "📄 Terpilih: " + input.files[0].name;
+            document.getElementById('file-label').innerText = "Terpilih: " + input.files[0].name;
         }
     }
 
-    // Handle Form Submit & Realtime Animation Progress
     document.getElementById('upload-form').onsubmit = async function(e) {
         e.preventDefault();
         const fileInput = document.getElementById('file-input');
@@ -267,14 +349,14 @@
 
         progressContainer.style.display = 'block';
         resultBox.style.display = 'none';
-        barFill.style.width = '10%';
-        logText.innerText = "> Mengunggah file ke local server...";
+        barFill.style.width = '15%';
+        logText.innerText = "> Mengunggah file ke memori server...";
 
         const formData = new FormData();
         formData.append('file', fileInput.files[0]);
 
-        setTimeout(() => { barFill.style.width = '40%'; logText.innerText = "> Menghitung cryptographic checksum (MD5 & SHA256)..."; }, 300);
-        setTimeout(() => { barFill.style.width = '75%'; logText.innerText = "> Memindai database signature ancaman & malware..."; }, 600);
+        setTimeout(() => { barFill.style.width = '45%'; logText.innerText = "> Mengkalkulasi algoritma kriptografi MD5 & SHA256..."; }, 350);
+        setTimeout(() => { barFill.style.width = '75%'; logText.innerText = "> Membandingkan signature dengan database ancaman..."; }, 700);
 
         try {
             const response = await fetch('/scan', {
@@ -285,17 +367,24 @@
 
             setTimeout(() => {
                 barFill.style.width = '100%';
-                logText.innerText = "> Pemindaian selesai dengan sukses.";
+                logText.innerText = "> Analisis selesai. Membersihkan jejak file...";
                 
                 setTimeout(() => {
                     progressContainer.style.display = 'none';
                     showResults(data);
+                    
+                    totalScanned++;
+                    document.getElementById('stat-scanned').innerText = totalScanned;
+                    if (data.infected) {
+                        totalThreats++;
+                        document.getElementById('stat-threats').innerText = totalThreats;
+                    }
                 }, 400);
-            }, 900);
+            }, 1000);
 
         } catch (err) {
             barFill.style.width = '100%';
-            logText.innerText = "> Error: Gagal terhubung ke engine server.";
+            logText.innerText = "> Error: Koneksi backend terputus.";
         }
     };
 
@@ -312,11 +401,11 @@
         resultBox.style.display = 'block';
         if (data.infected) {
             resultBox.className = "card danger";
-            resHeader.innerHTML = "⚠️ PERINGATAN: ANCAMAN TERDETEKSI!";
+            resHeader.innerHTML = `<svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> PERINGATAN: ANCAMAN MALWARE TERDETEKSI!`;
             resHeader.style.color = "#dc2626";
         } else {
             resultBox.className = "card safe";
-            resHeader.innerHTML = "✅ FILE BERSIH & AMAN";
+            resHeader.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> STATUS: BERKAS BERSIH & AMAN`;
             resHeader.style.color = "#059669";
         }
     }
