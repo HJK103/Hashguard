@@ -1,156 +1,326 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HashGuard - Malware & Integrity Scanner</title>
+    <title>HashGuard - Advanced Local Security Scanner</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: monospace;
+            font-family: 'Space Grotesk', sans-serif;
         }
         body {
-            background-color: #f4f4f0;
-            color: #111;
-            padding: 20px;
+            background-color: #f3f0ea;
+            color: #121212;
+            padding: 15px;
+            min-height: 100vh;
         }
         .container {
             max-width: 600px;
             margin: 0 auto;
-            background: #fff;
-            border: 4px solid #000;
-            box-shadow: 6px 6px 0px #000;
+        }
+        /* Top Status Bar (Neo-Brutalist Style) */
+        .status-bar {
+            background: #ffffff;
+            border: 3px solid #121212;
+            box-shadow: 4px 4px 0px #121212;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            border: 1px solid #121212;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        /* Main Card */
+        .card {
+            background: #ffffff;
+            border: 4px solid #121212;
+            box-shadow: 6px 6px 0px #121212;
             padding: 24px;
+            margin-bottom: 20px;
         }
         h1 {
-            font-size: 24px;
+            font-size: 26px;
+            font-weight: 700;
             margin-bottom: 8px;
             text-transform: uppercase;
-            border-bottom: 3px solid #000;
-            padding-bottom: 8px;
+            letter-spacing: -0.5px;
         }
         p.subtitle {
-            font-size: 13px;
+            font-size: 14px;
+            color: #555;
             margin-bottom: 20px;
-            background: #ffde59;
-            display: inline-block;
-            padding: 2px 6px;
-            border: 2px solid #000;
-            font-weight: bold;
         }
-        .upload-box {
-            border: 3px dashed #000;
-            padding: 30px;
+
+        /* Upload Zone */
+        .upload-zone {
+            border: 3px dashed #121212;
+            padding: 30px 20px;
             text-align: center;
-            background: #f9f9f9;
-            margin-bottom: 20px;
+            background: #faf8f5;
             cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 15px;
         }
-        .upload-box:hover {
-            background: #eee;
+        .upload-zone:hover {
+            background: #eee8df;
         }
         input[type="file"] {
             display: none;
         }
         .btn {
-            background: #000;
-            color: #fff;
-            border: 3px solid #000;
-            padding: 10px 20px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 3px 3px 0px #ffde59;
+            background: #ff6b6b;
+            color: #121212;
+            border: 3px solid #121212;
+            box-shadow: 4px 4px 0px #121212;
+            font-weight: 700;
+            padding: 12px 20px;
             width: 100%;
+            cursor: pointer;
             text-transform: uppercase;
-            font-size: 14px;
+            font-size: 15px;
+            transition: transform 0.1s, box-shadow 0.1s;
         }
         .btn:active {
-            box-shadow: 1px 1px 0px #ffde59;
             transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #121212;
         }
-        .result-box {
-            margin-top: 20px;
-            border: 3px solid #000;
-            background: #111;
-            color: #0f0;
-            padding: 16px;
+        .btn-primary {
+            background: #ffe600;
+        }
+
+        /* Realtime Progress & Console Simulation */
+        #progress-container {
             display: none;
-            word-break: break-all;
-        }
-        .result-box h3 {
-            color: #ffde59;
-            margin-bottom: 10px;
-            border-bottom: 1px dashed #555;
-            padding-bottom: 5px;
-        }
-        .result-item {
-            margin-bottom: 8px;
+            margin-top: 20px;
+            border: 3px solid #121212;
+            background: #121212;
+            color: #22c55e;
+            padding: 15px;
+            font-family: monospace;
             font-size: 12px;
+            box-shadow: 4px 4px 0px #ff6b6b;
+        }
+        .progress-bar-track {
+            width: 100%;
+            height: 12px;
+            background: #333;
+            border: 2px solid #fff;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: #22c55e;
+            transition: width 0.3s ease;
+        }
+
+        /* Result Box */
+        #result-box {
+            display: none;
+            margin-top: 20px;
+            border: 3px solid #121212;
+            padding: 18px;
+            box-shadow: 5px 5px 0px #121212;
+        }
+        .safe { background-color: #d1fae5; }
+        .danger { background-color: #fee2e2; }
+        
+        .result-title {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .hash-box {
+            background: #fff;
+            border: 2px solid #121212;
+            padding: 8px;
+            font-size: 11px;
+            word-break: break-all;
+            margin-top: 8px;
+            font-family: monospace;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>HashGuard // v1.0</h1>
-        <p class="subtitle">Local Integrity & Threat Analyzer</p>
-        
-        <div class="upload-box" onclick="document.getElementById('fileInput').click()">
-            <p id="fileLabel"><b>[+] TAP TO SELECT FILE TO SCAN</b></p>
-            <input type="file" id="fileInput" onchange="handleFileSelect(this)">
+<div class="container">
+    <!-- Status Bar Real-time (Baterai, Jam, Koneksi) -->
+    <div class="status-bar">
+        <div class="status-item">
+            <span class="dot"></span>
+            <span id="connection-status">Online</span>
         </div>
-
-        <button class="btn" onclick="uploadFile()">Run Security Scan</button>
-
-        <div class="result-box" id="resultBox">
-            <h3>[ Scan Report ]</h3>
-            <div class="result-item" id="resName">Filename: -</div>
-            <div class="result-item" id="resMd5">MD5: -</div>
-            <div class="result-item" id="resSha">SHA-256: -</div>
-            <div class="result-item" id="resStatus" style="color: #0ff; font-weight: bold;">Status: -</div>
-        </div>
+        <div class="status-item" id="battery-status">⚡ --%</div>
+        <div class="status-item" id="live-clock">00:00:00</div>
     </div>
 
-    <script>
-        let selectedFile = null;
+    <!-- Main Controller Card -->
+    <div class="card">
+        <h1>HashGuard v2</h1>
+        <p class="subtitle">Local File Integrity & Malware Deep Scanner</p>
 
-        function handleFileSelect(input) {
-            if (input.files.length > 0) {
-                selectedFile = input.files[0];
-                document.getElementById('fileLabel').innerHTML = `<b>Selected:</b> ${selectedFile.name}`;
-            }
+        <form id="upload-form" enctype="multipart/form-data">
+            <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+                <p id="file-label">📁 Tap untuk pilih file atau arsip...</p>
+            </div>
+            <input type="file" id="file-input" name="file" required onchange="updateFileName(this)">
+            <button type="submit" class="btn btn-primary">Mulai Scan Real-Time</button>
+        </form>
+
+        <!-- Progress & Realtime Terminal Logs -->
+        <div id="progress-container">
+            <div id="log-text">> Inisialisasi mesin pemindai...</div>
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="bar-fill"></div>
+            </div>
+        </div>
+
+        <!-- Result Card -->
+        <div id="result-box">
+            <div class="result-title" id="res-header">Hasil Analisis</div>
+            <p><strong>Nama File:</strong> <span id="res-name">-</span></p>
+            <p><strong>Ukuran:</strong> <span id="res-size">-</span></p>
+            <p style="margin-top: 8px;"><strong>Status Ancaman:</strong> <span id="res-threat" style="font-weight:700;">-</span></p>
+            
+            <div style="margin-top: 10px; font-size: 12px; font-weight: 700;">MD5 Checksum:</div>
+            <div class="hash-box" id="res-md5">-</div>
+            
+            <div style="margin-top: 8px; font-size: 12px; font-weight: 700;">SHA-256 Checksum:</div>
+            <div class="hash-box" id="res-sha256">-</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Live Clock & Status Bar
+    function updateStatus() {
+        const now = new Date();
+        document.getElementById('live-clock').innerText = now.toTimeString().split(' ')[0];
+        
+        // Cek Koneksi Internet
+        const conn = document.getElementById('connection-status');
+        if (navigator.onLine) {
+            conn.innerText = "Online";
+            conn.previousElementSibling.style.backgroundColor = "#22c55e";
+        } else {
+            conn.innerText = "Offline (Local Engine)";
+            conn.previousElementSibling.style.backgroundColor = "#ef4444";
         }
 
-        function uploadFile() {
-            if (!selectedFile) {
-                alert("Please select a file first!");
-                return;
-            }
-
-            let formData = new FormData();
-            formData.append("file", selectedFile);
-
-            document.getElementById('resStatus').innerText = "Status: Scanning file hashes & signatures...";
-            document.getElementById('resultBox').style.display = 'block';
-
-            fetch('/scan', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('resName').innerText = `Filename: ${data.filename}`;
-                document.getElementById('resMd5').innerText = `MD5: ${data.md5}`;
-                document.getElementById('resSha').innerText = `SHA-256: ${data.sha256}`;
-                document.getElementById('resStatus').innerText = `Status: ${data.scan.status} (${data.scan.engine_matches})`;
-            })
-            .catch(error => {
-                alert("Error scanning file!");
-                console.error(error);
+        // Cek Baterai (jika didukung browser HP)
+        if (navigator.getBattery) {
+            navigator.getBattery().then(batt => {
+                const lvl = Math.round(batt.level * 100);
+                const charging = batt.charging ? '⚡' : '';
+                document.getElementById('battery-status').innerText = `${charging} ${lvl}%`;
             });
         }
-    </script>
+    }
+    setInterval(updateStatus, 1000);
+    updateStatus();
+
+    function updateFileName(input) {
+        if (input.files.length > 0) {
+            document.getElementById('file-label').innerText = "📄 Terpilih: " + input.files[0].name;
+        }
+    }
+
+    // Handle Form Submit & Realtime Animation Progress
+    document.getElementById('upload-form').onsubmit = async function(e) {
+        e.preventDefault();
+        const fileInput = document.getElementById('file-input');
+        if (fileInput.files.length === 0) return;
+
+        const progressContainer = document.getElementById('progress-container');
+        const barFill = document.getElementById('bar-fill');
+        const logText = document.getElementById('log-text');
+        const resultBox = document.getElementById('result-box');
+
+        progressContainer.style.display = 'block';
+        resultBox.style.display = 'none';
+        barFill.style.width = '10%';
+        logText.innerText = "> Mengunggah file ke local server...";
+
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+
+        setTimeout(() => { barFill.style.width = '40%'; logText.innerText = "> Menghitung cryptographic checksum (MD5 & SHA256)..."; }, 300);
+        setTimeout(() => { barFill.style.width = '75%'; logText.innerText = "> Memindai database signature ancaman & malware..."; }, 600);
+
+        try {
+            const response = await fetch('/scan', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+
+            setTimeout(() => {
+                barFill.style.width = '100%';
+                logText.innerText = "> Pemindaian selesai dengan sukses.";
+                
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                    showResults(data);
+                }, 400);
+            }, 900);
+
+        } catch (err) {
+            barFill.style.width = '100%';
+            logText.innerText = "> Error: Gagal terhubung ke engine server.";
+        }
+    };
+
+    function showResults(data) {
+        const resultBox = document.getElementById('result-box');
+        const resHeader = document.getElementById('res-header');
+        
+        document.getElementById('res-name').innerText = data.filename;
+        document.getElementById('res-size').innerText = data.size;
+        document.getElementById('res-threat').innerText = data.threat;
+        document.getElementById('res-md5').innerText = data.md5;
+        document.getElementById('res-sha256').innerText = data.sha256;
+
+        resultBox.style.display = 'block';
+        if (data.infected) {
+            resultBox.className = "card danger";
+            resHeader.innerHTML = "⚠️ PERINGATAN: ANCAMAN TERDETEKSI!";
+            resHeader.style.color = "#dc2626";
+        } else {
+            resultBox.className = "card safe";
+            resHeader.innerHTML = "✅ FILE BERSIH & AMAN";
+            resHeader.style.color = "#059669";
+        }
+    }
+</script>
+
 </body>
 </html>
